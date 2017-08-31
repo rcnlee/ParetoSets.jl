@@ -1,7 +1,7 @@
 module ParetoSets
 
 export dominates, naive_pareto
-export ParetoSet, pareto_ids, pareto_ys, dominated_ids, dominated_ys, all_ys
+export ParetoSet, pareto_ids, pareto_ys, dominated_ids, dominated_ys, all_ys, ispareto
 
 """
     dominates(y, y´)
@@ -34,10 +34,8 @@ ParetoSet() = ParetoSet(Vector{Float64}[], Int[])
 function Base.push!(p::ParetoSet, y::Vector{Float64})
     push!(p.ys, y)
     yi = length(p.ys)
-    if !any(dominates(y´, y) for y´ in p.ys)
-        push!(p.pareto_ids, yi)
-    end
-    ids = find(y´->dominates(y,y´), view(p.ys, p.pareto_ids))
+    ispareto(p, y) && push!(p.pareto_ids, yi)
+    ids = find(y´->dominates(y,y´), pareto_ys(p))
     deleteat!(p.pareto_ids, ids)
 end
 
@@ -53,5 +51,7 @@ function Base.append!(ps::ParetoSet, ys)
         push!(ps, y)
     end
 end
+
+ispareto(p::ParetoSet, y::Vector{Float64}) = !any(dominates(y´, y) for y´ in pareto_ys(p))
 
 end # module
