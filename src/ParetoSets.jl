@@ -32,13 +32,12 @@ end
 ParetoSet() = ParetoSet(Vector{Float64}[], Int[])
 
 function Base.push!(p::ParetoSet, y::Vector{Float64})
-    push!(p.ys, y)
-    yi = length(p.ys)
     if !any(dominates(y´, y) for y´ in p.ys)
-        push!(p.pareto_ids, yi)
+        push!(p.pareto_ids, length(p.ys)+1)
     end
     ids = find(y´->dominates(y,y´), view(p.ys, p.pareto_ids))
     deleteat!(p.pareto_ids, ids)
+    push!(p.ys, y)
 end
 
 pareto_ids(p::ParetoSet) = p.pareto_ids
