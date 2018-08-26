@@ -25,7 +25,7 @@ let
     v = Vector{Float64}[]
     push!(v, x)
     push!(v, y)
-    for i = 1:10
+    for i = 1:8
         push!(v, rand(2) .+ 0.02)
     end
     ids = naive_pareto(v)
@@ -42,4 +42,6 @@ let
     @test pareto_ids(ps) == [1,2]
     @test pareto_ys(ps) == [x,y]
     @test pareto_ids(ps) == naive_pareto(v)
+    @test dominated_ids(ps) == collect(3:length(v))
+    @test dominated_ys(ps) == v[3:end]
 end

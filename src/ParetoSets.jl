@@ -1,7 +1,7 @@
 module ParetoSets
 
 export dominates, naive_pareto
-export ParetoSet, pareto_ids, pareto_ys
+export ParetoSet, pareto_ids, pareto_ys, dominated_ids, dominated_ys
 
 """
     dominates(y, y´)
@@ -42,7 +42,9 @@ function Base.push!(p::ParetoSet, y::Vector{Float64})
 end
 
 pareto_ids(p::ParetoSet) = p.pareto_ids
+dominated_ids(p::ParetoSet) = setdiff(1:length(p.ys), p.pareto_ids)
 pareto_ys(p::ParetoSet) = view(p.ys, p.pareto_ids)
+dominated_ys(p::ParetoSet) = view(p.ys, dominated_ids(p))
 
 Base.getindex(p::ParetoSet, i) = p.ys[i]
 function Base.append!(ps::ParetoSet, ys)
